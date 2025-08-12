@@ -1,12 +1,12 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getPlayers } from "../services/apiPlayers";
-import { getPlayerAnnotationFromAI } from "../services/AI";
 import {
-  fetchPlayerProfile,
-  fetchWikipediaBio,
-  fetchWikipediaImage,
-} from "../services/profileDetails";
+  getFifaImageUrl,
+  getPlayerByRank,
+  getPlayerFromFifa,
+} from "../services/apiPlayers";
+import { getPlayerAnnotationFromAI } from "../services/AI";
+import { fetchWikipediaImage } from "../services/profileDetails";
 
 interface Player {
   [key: string]: any;
@@ -148,27 +148,25 @@ function PlayerDetail() {
   const { rk } = useParams<{ rk: string }>();
   const [player, setPlayer] = useState<Player | null>(null);
   const [annotation, setAnnotation] = useState<string>("");
-  const [profileDetails, setProfileDetails] = useState<object>({});
-  const [profileBio, setProfileBio] = useState<object>({});
+  const [profileImage, setProfileImage] = useState<string>("");
+  const [fifaProfile, setFifaProfile] = useState<object>({});
 
   console.log(player);
 
   useEffect(() => {
-    getPlayers().then((data) => {
-      const found = data.find((p: Player) => String(p.Rk) === rk);
-      setPlayer(found || null);
-    });
+    getPlayerByRank(Number(rk)).then(setPlayer);
   }, [rk]);
 
   useEffect(() => {
     if (player) {
       getPlayerAnnotationFromAI(player).then(setAnnotation);
-      fetchWikipediaImage(player?.Player).then(setProfileDetails);
-      // fetchWikipediaBio("").then(setProfileBio);
+      fetchWikipediaImage(player?.Player).then(setProfileImage);
+      getPlayerFromFifa(player?.Player).then(setFifaProfile);
+      getFifaImageUrl(fifaProfile);
     }
   }, [player]);
-  console.log(profileDetails);
-  // console.log(profileBio);
+  console.log(profileImage);
+  console.log("fifaProfile", fifaProfile);
 
   if (!player) return <div>Player not found.</div>;
 
@@ -182,6 +180,38 @@ function PlayerDetail() {
       <p>
         <strong>Rank:</strong> {player.Rk}
       </p>
+      {profileImage && (
+        <img src={profileImage} alt={player.Player || "Player profile"} />
+      )}
+      {fifaProfile && (fifaProfile as any).url && (
+        <img
+          src={getFifaImageUrl(fifaProfile)}
+          alt={fifaProfile?.Name || "FIFA profile"}
+          style={{ maxWidth: "265px", margin: "1em 0" }}
+        />
+      )}
+      {/* FIFA Profile Stats */}
+      {fifaProfile && (
+        <div
+          style={{
+            margin: "1em 0",
+            padding: "1em",
+            background: "#eaf7ff",
+            borderRadius: "8px",
+          }}
+        >
+          <strong>FIFA Stats:</strong>
+          <ul>
+            {Object.entries(fifaProfile)
+              .filter(([key]) => key !== "ID" && key !== "url")
+              .map(([key, value]) => (
+                <li key={key}>
+                  <strong>{key}:</strong> {String(value)}
+                </li>
+              ))}
+          </ul>
+        </div>
+      )}
       <div
         style={{
           margin: "1em 0",
