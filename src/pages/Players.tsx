@@ -5,6 +5,11 @@ import { getPlayers } from "../services/apiPlayers";
 interface Player {
   Rk: string | number;
   Player: string;
+  Age?: number;
+  Team?: string;
+  Position?: string;
+  Points?: number;
+  // Add other stats as needed
 }
 
 function Players() {
