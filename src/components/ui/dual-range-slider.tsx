@@ -21,7 +21,7 @@ const DualRangeSlider = React.forwardRef<
     <SliderPrimitive.Root
       ref={ref}
       className={cn(
-        "relative flex w-18 touch-none select-none items-center",
+        "relative flex w-20 touch-none select-none items-center",
         className
       )}
       {...props}

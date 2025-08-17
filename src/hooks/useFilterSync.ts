@@ -4,11 +4,12 @@ import { useFiltersStore } from "@/stores/useFiltersStore";
 
 export function useFilterSync() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const { setFromSearchParams, getSearchParamsObject } = useFiltersStore();
+  const { setFromSearchParams, setHydrated } = useFiltersStore();
 
   // Initialize store from URL params on mount
   useEffect(() => {
     setFromSearchParams(searchParams);
+    setHydrated(true);
   }, []); // Only run on mount
 
   // Subscribe to store changes and update URL
@@ -22,7 +23,7 @@ export function useFilterSync() {
       {
         // Only update URL when filter values change, not when actions change
         equalityFn: (a, b) => {
-          const filterKeys = [
+          const filterKeys: (keyof typeof a)[] = [
             "searchValue",
             "minYear",
             "maxYear",
@@ -32,6 +33,28 @@ export function useFilterSync() {
             "club",
             "position",
             "competition",
+            "minCarries",
+            "maxCarries",
+            "minPrgC",
+            "maxPrgC",
+            "minPrgDist",
+            "maxPrgDist",
+            "minPrgR",
+            "maxPrgR",
+            "minMis",
+            "maxMis",
+            "minDis",
+            "maxDis",
+            "minAtt",
+            "maxAtt",
+            "minSucc",
+            "maxSucc",
+            "minSuccPct",
+            "maxSuccPct",
+            "minAtt3rd",
+            "maxAtt3rd",
+            "minAttPen",
+            "maxAttPen",
           ];
           return filterKeys.every((key) => a[key] === b[key]);
         },
