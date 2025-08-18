@@ -10,9 +10,10 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useFiltersStore } from "@/stores/useFiltersStore";
 import { useFilterSync } from "@/hooks/useFilterSync";
+import type { Player } from "@/types/Player";
 
 export default function Home() {
-  const [players, setPlayers] = useState<[] | null>([]);
+  const [players, setPlayers] = useState<Player[] | null>([]);
 
   // Use the filter sync hook
   useFilterSync();
@@ -1027,7 +1028,7 @@ export default function Home() {
         </header>
 
         {players?.length
-          ? players.map((player) => (
+          ? players.map((player: Player) => (
               <Link to={`/player/${player.Rk}`} key={player.Rk}>
                 {player.Player}
               </Link>
