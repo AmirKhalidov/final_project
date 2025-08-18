@@ -748,14 +748,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarGroup>
         </Collapsible>
 
-        <Collapsible title="Carries" className="group/collapsible">
+        <Collapsible title="Shooting" className="group/collapsible">
           <SidebarGroup>
             <SidebarGroupLabel
               asChild
               className="group/label text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground text-sm cursor-pointer"
             >
               <CollapsibleTrigger>
-                Shots
+                Shooting
                 <ChevronRight className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />
               </CollapsibleTrigger>
             </SidebarGroupLabel>
@@ -1974,7 +1974,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     <SidebarMenuButton>
                       <div className="grid w-full items-center [grid-template-columns:92px_26px_80px_20px] gap-[6px]">
                         <span className="whitespace-nowrap">
-                          Second Yellow Cards
+                          Second Yell Cards
                         </span>
                         <span className="text-xs text-muted-foreground text-right">
                           {min2CrdY}
@@ -2024,7 +2024,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     <SidebarMenuButton>
                       <div className="grid w-full items-center [grid-template-columns:92px_26px_80px_20px] gap-[6px]">
                         <span className="whitespace-nowrap">
-                          Penalties Conceded
+                          Penalties Conc
                         </span>
                         <span className="text-xs text-muted-foreground text-right">
                           {minPKcon}

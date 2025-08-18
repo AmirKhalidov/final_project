@@ -150,6 +150,7 @@ function PlayerDetail() {
   const [annotation, setAnnotation] = useState<string>("");
   const [profileImage, setProfileImage] = useState<string>("");
   const [fifaProfile, setFifaProfile] = useState<object>({});
+  const [fifaProfileImage, setFifaProfileImage] = useState<string>("");
 
   console.log(player);
 
@@ -162,9 +163,9 @@ function PlayerDetail() {
       getPlayerAnnotationFromAI(player).then(setAnnotation);
       fetchWikipediaImage(player?.Player).then(setProfileImage);
       getPlayerFromFifa(player?.Player).then(setFifaProfile);
-      getFifaImageUrl(fifaProfile);
+      setFifaProfileImage(getFifaImageUrl(fifaProfile));
     }
-  }, [player]);
+  }, [player, fifaProfile]);
   console.log(profileImage);
   console.log("fifaProfile", fifaProfile);
 
@@ -185,7 +186,7 @@ function PlayerDetail() {
       )}
       {fifaProfile && (fifaProfile as any).url && (
         <img
-          src={getFifaImageUrl(fifaProfile)}
+          src={fifaProfileImage}
           alt={fifaProfile?.Name || "FIFA profile"}
           style={{ maxWidth: "265px", margin: "1em 0" }}
         />

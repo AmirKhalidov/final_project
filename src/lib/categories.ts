@@ -113,7 +113,6 @@ export const categories = [
       { description: "Progressive Runs" },
       { description: "Miscontrols" },
       { description: "Dispossessed" },
-      { description: "Dribbles Attempted" },
       { description: "Successful Dribbles" },
       { description: "Dribble Success Percentage" },
       { description: "Dribbles in Attacking Third" },
