@@ -532,7 +532,7 @@ export default function PlayerDetail() {
     title: string;
     stats: Array<{
       label: string;
-      value: string | number;
+      value: string | number | undefined;
       isPercentage?: boolean;
       maxValue?: number;
     }>;
@@ -550,7 +550,7 @@ export default function PlayerDetail() {
             <StatWithProgress
               key={index}
               label={stat.label}
-              value={stat.value}
+              value={stat.value ?? ""}
               maxValue={stat.maxValue}
               isPercentage={stat.isPercentage}
             />
@@ -613,7 +613,7 @@ export default function PlayerDetail() {
             <StatGroup
               title="Personal"
               stats={[
-                { label: "Year of Birth", value: player?.Born },
+                { label: "Year of Birth", value: String(player?.Born) },
                 { label: "Age", value: player?.Age },
                 { label: "Nationality", value: player?.Nation },
                 { label: "Club", value: player?.Squad },
@@ -634,8 +634,8 @@ export default function PlayerDetail() {
                   maxValue: 213,
                 },
                 {
-                  label: player?.PrgDist,
-                  value: "850-1200",
+                  label: "Progressive Carry Distance",
+                  value: player?.PrgDist,
                   maxValue: 25308,
                 },
                 {
@@ -643,8 +643,8 @@ export default function PlayerDetail() {
                   value: player?.PrgR,
                   maxValue: 488,
                 },
-                { label: "Miscontrols", value: "8-15", maxValue: 117 },
-                { label: "Dispossessed", value: "12-20", maxValue: 94 },
+                { label: "Miscontrols", value: player?.Mis, maxValue: 117 },
+                { label: "Dispossessed", value: player?.Dis, maxValue: 94 },
                 {
                   label: "Successful Dribbles",
                   value: player?.Succ,
@@ -672,17 +672,21 @@ export default function PlayerDetail() {
               title="Shooting"
               showProgress={true}
               stats={[
-                { label: "Shots", value: "120-180", maxValue: 152 },
-                { label: "Shots on Target", value: "65-95", maxValue: 75 },
+                { label: "Shots", value: player?.Sh, maxValue: 152 },
+                { label: "Shots on Target", value: player?.SoT, maxValue: 75 },
                 {
                   label: "Shots on Target Percentage",
-                  value: "50-65",
+                  value: player?.["SoT%"],
                   isPercentage: true,
                 },
-                { label: "Shots per 90", value: "4.2-6.8", maxValue: 90 },
                 {
-                  label: "Average Shot Distance",
-                  value: "16-22",
+                  label: "Shots per 90",
+                  value: player?.["Sh/90"],
+                  maxValue: 90,
+                },
+                {
+                  label: "Shots on Target per 90",
+                  value: player?.["SoT/90"],
                   maxValue: 90,
                 },
               ]}
@@ -831,69 +835,6 @@ export default function PlayerDetail() {
                 },
               ]}
             />
-
-           
-
-            
-
-            
-
-            <StatGroup
-              title="Other"
-              showProgress={true}
-              stats={[
-                {
-                  label: "Points Per Match",
-                  value: player?.PPM,
-                  maxValue: 3,
-                },
-                {
-                  label: "Passes Received",
-                  value: player?.Rec,
-                  maxValue: 3047,
-                },
-                {
-                  label: "Recoveries",
-                  value: player?.Recov,
-                  maxValue: 254,
-                },
-                {
-                  label: "Touches",
-                  value: player?.Touches,
-                  maxValue: 3867,
-                },
-                {
-                  label: "Total Distance",
-                  value: player?.TotDist,
-                  maxValue: 58907,
-                },
-                {
-                  label: "Free Kicks",
-                  value: player?.FK,
-                  maxValue: 20,
-                },
-                {
-                  label: "Corner Kicks",
-                  value: player?.CK,
-                  maxValue: 140,
-                },
-                {
-                  label: "Throw-Ins",
-                  value: player?.TI,
-                  maxValue: 399,
-                },
-                {
-                  label: "Live Ball",
-                  value: player?.Live,
-                  maxValue: 3354,
-                },
-                {
-                  label: "Dead Ball",
-                  value: player?.Dead,
-                  maxValue: 462,
-                },
-              ]}
-            />
           </div>
 
           {/* Right Side - FIFA Card and Game Stats */}
@@ -919,9 +860,8 @@ export default function PlayerDetail() {
             {/* FIFA Stats Breakdown */}
             <Card className="bg-[#15803d]/10">
               <CardHeader>
-                <CardTitle className="text-[#15803d]">
-                  FIFA Detailed Stats
-                </CardTitle>
+                <CardTitle className="text-[#15803d]">FIFA Stats</CardTitle>
+                {fifaProfile?.Name ? "" : <h2>No Data Found...</h2>}
               </CardHeader>
               <CardContent className="space-y-3">
                 <div className="grid grid-cols-2 gap-4">
@@ -1150,13 +1090,13 @@ export default function PlayerDetail() {
                     <div className="flex justify-between">
                       <span>Weak Foot</span>
                       <span className="font-semibold">
-                        {fifaProfile?.["Weak foot"]}★
+                        {fifaProfile?.["Weak foot"]}⭐
                       </span>
                     </div>
                     <div className="flex justify-between">
                       <span>Skill Moves</span>
                       <span className="font-semibold">
-                        {fifaProfile?.["Skill moves"]}★
+                        {fifaProfile?.["Skill moves"]}⭐
                       </span>
                     </div>
                     <div className="flex justify-between">
@@ -1194,9 +1134,11 @@ export default function PlayerDetail() {
               </CardHeader>
               <CardContent>
                 <div className="prose prose-sm max-w-none">
-                  <p className="text-muted-foreground leading-relaxed font-semibold">
-                    {annotation}
-                  </p>
+                  {annotation.split("\n\n").map((para, i) => (
+                    <p key={i} className="mb-4 text-gray-800 leading-relaxed font-semibold">
+                      {para}
+                    </p>
+                  ))}
                 </div>
               </CardContent>
             </Card>
@@ -1208,212 +1150,222 @@ export default function PlayerDetail() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="relative w-full h-120 flex items-center justify-center">
-                  <svg viewBox="0 0 400 400" className="w-full h-full">
-                    {/* Hexagon grid lines */}
-                    <defs>
-                      <pattern
-                        id="grid"
-                        width="40"
-                        height="40"
-                        patternUnits="userSpaceOnUse"
-                      >
-                        <path
-                          d="M 40 0 L 0 0 0 40"
+                {fifaProfile?.Name ? (
+                  <div className="relative w-full h-120 flex items-center justify-center">
+                    <svg viewBox="0 0 400 400" className="w-full h-full">
+                      {/* Hexagon grid lines */}
+                      <defs>
+                        <pattern
+                          id="grid"
+                          width="40"
+                          height="40"
+                          patternUnits="userSpaceOnUse"
+                        >
+                          <path
+                            d="M 40 0 L 0 0 0 40"
+                            fill="none"
+                            stroke="hsl(var(--muted))"
+                            strokeWidth="0.5"
+                          />
+                        </pattern>
+                      </defs>
+
+                      {/* Background hexagons */}
+                      {[0.2, 0.4, 0.6, 0.8, 1.0].map((scale, index) => (
+                        <polygon
+                          key={index}
+                          points={[
+                            [200 + 100 * scale, 200],
+                            [200 + 50 * scale, 200 - 86.6 * scale],
+                            [200 - 50 * scale, 200 - 86.6 * scale],
+                            [200 - 100 * scale, 200],
+                            [200 - 50 * scale, 200 + 86.6 * scale],
+                            [200 + 50 * scale, 200 + 86.6 * scale],
+                          ]
+                            .map(([x, y]) => `${x},${y}`)
+                            .join(" ")}
                           fill="none"
                           stroke="hsl(var(--muted))"
-                          strokeWidth="0.5"
+                          strokeWidth="1"
                         />
-                      </pattern>
-                    </defs>
+                      ))}
 
-                    {/* Background hexagons */}
-                    {[0.2, 0.4, 0.6, 0.8, 1.0].map((scale, index) => (
+                      {/* Axis lines */}
+                      {[
+                        [200, 200, 300, 200], // Right
+                        [200, 200, 250, 113.4], // Top Right
+                        [200, 200, 150, 113.4], // Top Left
+                        [200, 200, 100, 200], // Left
+                        [200, 200, 150, 286.6], // Bottom Left
+                        [200, 200, 250, 286.6], // Bottom Right
+                      ].map(([x1, y1, x2, y2], index) => (
+                        <line
+                          key={index}
+                          x1={x1}
+                          y1={y1}
+                          x2={x2}
+                          y2={y2}
+                          stroke="hsl(var(--muted))"
+                          strokeWidth="1"
+                        />
+                      ))}
+
+                      <defs>
+                        <filter id="glow">
+                          <feGaussianBlur
+                            stdDeviation="3"
+                            result="coloredBlur"
+                          />
+                          <feMerge>
+                            <feMergeNode in="coloredBlur" />
+                            <feMergeNode in="SourceGraphic" />
+                          </feMerge>
+                        </filter>
+                      </defs>
+
                       <polygon
-                        key={index}
                         points={[
-                          [200 + 100 * scale, 200],
-                          [200 + 50 * scale, 200 - 86.6 * scale],
-                          [200 - 50 * scale, 200 - 86.6 * scale],
-                          [200 - 100 * scale, 200],
-                          [200 - 50 * scale, 200 + 86.6 * scale],
-                          [200 + 50 * scale, 200 + 86.6 * scale],
+                          [
+                            200 + (fifaProfile?.["Shot Power"] / 100) * 100,
+                            200,
+                          ],
+                          [
+                            200 + (fifaProfile?.PAC / 100) * 50,
+                            200 - (fifaProfile?.PAC / 100) * 86.6,
+                          ],
+                          [
+                            200 - (fifaProfile?.PAS / 100) * 50,
+                            200 - (fifaProfile?.PAS / 100) * 86.6,
+                          ],
+                          [200 - (fifaProfile?.DEF / 100) * 100, 200],
+                          [
+                            200 - (fifaProfile?.PHY / 100) * 50,
+                            200 + (fifaProfile?.PHY / 100) * 86.6,
+                          ],
+                          [
+                            200 + (fifaProfile?.Dribbling / 100) * 50,
+                            200 + (fifaProfile?.Dribbling / 100) * 86.6,
+                          ],
                         ]
                           .map(([x, y]) => `${x},${y}`)
                           .join(" ")}
-                        fill="none"
-                        stroke="hsl(var(--muted))"
-                        strokeWidth="1"
-                      />
-                    ))}
-
-                    {/* Axis lines */}
-                    {[
-                      [200, 200, 300, 200], // Right
-                      [200, 200, 250, 113.4], // Top Right
-                      [200, 200, 150, 113.4], // Top Left
-                      [200, 200, 100, 200], // Left
-                      [200, 200, 150, 286.6], // Bottom Left
-                      [200, 200, 250, 286.6], // Bottom Right
-                    ].map(([x1, y1, x2, y2], index) => (
-                      <line
-                        key={index}
-                        x1={x1}
-                        y1={y1}
-                        x2={x2}
-                        y2={y2}
-                        stroke="hsl(var(--muted))"
-                        strokeWidth="1"
-                      />
-                    ))}
-
-                    <defs>
-                      <filter id="glow">
-                        <feGaussianBlur stdDeviation="3" result="coloredBlur" />
-                        <feMerge>
-                          <feMergeNode in="coloredBlur" />
-                          <feMergeNode in="SourceGraphic" />
-                        </feMerge>
-                      </filter>
-                    </defs>
-
-                    <polygon
-                      points={[
-                        [200 + (fifaProfile?.["Shot Power"] / 100) * 100, 200],
-                        [
-                          200 + (fifaProfile?.PAC / 100) * 50,
-                          200 - (fifaProfile?.PAC / 100) * 86.6,
-                        ],
-                        [
-                          200 - (fifaProfile?.PAS / 100) * 50,
-                          200 - (fifaProfile?.PAS / 100) * 86.6,
-                        ],
-                        [200 - (fifaProfile?.DEF / 100) * 100, 200],
-                        [
-                          200 - (fifaProfile?.PHY / 100) * 50,
-                          200 + (fifaProfile?.PHY / 100) * 86.6,
-                        ],
-                        [
-                          200 + (fifaProfile?.Dribbling / 100) * 50,
-                          200 + (fifaProfile?.Dribbling / 100) * 86.6,
-                        ],
-                      ]
-                        .map(([x, y]) => `${x},${y}`)
-                        .join(" ")}
-                      fill="hsl(var(--primary))"
-                      fillOpacity="0.4"
-                      stroke="hsl(var(--primary))"
-                      strokeWidth="3"
-                      filter="url(#glow)"
-                      className="animate-pulse"
-                    />
-
-                    {[
-                      {
-                        x: 200 + (fifaProfile?.SHO / 100) * 100,
-                        y: 200,
-                        label: "Shooting",
-                        value: fifaProfile?.SHO,
-                      },
-                      {
-                        x: 200 + (fifaProfile?.PAC / 100) * 50,
-                        y: 200 - (fifaProfile?.PAC / 100) * 86.6,
-                        label: "Pace",
-                        value: fifaProfile?.PAC,
-                      },
-                      {
-                        x: 200 - (fifaProfile?.PAS / 100) * 50,
-                        y: 200 - (fifaProfile?.PAS / 100) * 86.6,
-                        label: "Passing",
-                        value: fifaProfile?.PAS,
-                      },
-                      {
-                        x: 200 - (fifaProfile?.DEF / 100) * 100,
-                        y: 200,
-                        label: "Defending",
-                        value: fifaProfile?.DEF,
-                      },
-                      {
-                        x: 200 - (fifaProfile?.PHY / 100) * 50,
-                        y: 200 + (fifaProfile?.PHY / 100) * 86.6,
-                        label: "Physical",
-                        value: fifaProfile?.PHY,
-                      },
-                      {
-                        x: 200 + (fifaProfile?.DRI / 100) * 50,
-                        y: 200 + (fifaProfile?.DRI / 100) * 86.6,
-                        label: "Dribbling",
-                        value: fifaProfile?.DRI,
-                      },
-                    ].map((point, index) => (
-                      <circle
-                        key={index}
-                        cx={point.x}
-                        cy={point.y}
-                        r="6"
                         fill="hsl(var(--primary))"
-                        stroke="white"
+                        fillOpacity="0.4"
+                        stroke="hsl(var(--primary))"
                         strokeWidth="3"
                         filter="url(#glow)"
                         className="animate-pulse"
                       />
-                    ))}
 
-                    {/* Labels */}
-                    <text
-                      x="320"
-                      y="205"
-                      textAnchor="start"
-                      className="fill-foreground text-sm font-semibold"
-                    >
-                      Shooting ({fifaProfile?.SHO})
-                    </text>
-                    <text
-                      x="270"
-                      y="100"
-                      textAnchor="start"
-                      className="fill-foreground text-sm font-semibold"
-                    >
-                      Pace ({fifaProfile?.PAC})
-                    </text>
-                    <text
-                      x="130"
-                      y="100"
-                      textAnchor="end"
-                      className="fill-foreground text-sm font-semibold"
-                    >
-                      Passing ({fifaProfile?.PAS})
-                    </text>
-                    <text
-                      x="80"
-                      y="205"
-                      textAnchor="end"
-                      className="fill-foreground text-sm font-semibold"
-                    >
-                      Defending ({fifaProfile?.DEF})
-                    </text>
-                    <text
-                      x="130"
-                      y="310"
-                      textAnchor="end"
-                      className="fill-foreground text-sm font-semibold"
-                    >
-                      Physical ({fifaProfile?.PHY})
-                    </text>
-                    <text
-                      x="270"
-                      y="310"
-                      textAnchor="start"
-                      className="fill-foreground text-sm font-semibold"
-                    >
-                      Dribbling ({fifaProfile?.DRI})
-                    </text>
-                  </svg>
-                </div>
+                      {[
+                        {
+                          x: 200 + (fifaProfile?.SHO / 100) * 100,
+                          y: 200,
+                          label: "Shooting",
+                          value: fifaProfile?.SHO,
+                        },
+                        {
+                          x: 200 + (fifaProfile?.PAC / 100) * 50,
+                          y: 200 - (fifaProfile?.PAC / 100) * 86.6,
+                          label: "Pace",
+                          value: fifaProfile?.PAC,
+                        },
+                        {
+                          x: 200 - (fifaProfile?.PAS / 100) * 50,
+                          y: 200 - (fifaProfile?.PAS / 100) * 86.6,
+                          label: "Passing",
+                          value: fifaProfile?.PAS,
+                        },
+                        {
+                          x: 200 - (fifaProfile?.DEF / 100) * 100,
+                          y: 200,
+                          label: "Defending",
+                          value: fifaProfile?.DEF,
+                        },
+                        {
+                          x: 200 - (fifaProfile?.PHY / 100) * 50,
+                          y: 200 + (fifaProfile?.PHY / 100) * 86.6,
+                          label: "Physical",
+                          value: fifaProfile?.PHY,
+                        },
+                        {
+                          x: 200 + (fifaProfile?.DRI / 100) * 50,
+                          y: 200 + (fifaProfile?.DRI / 100) * 86.6,
+                          label: "Dribbling",
+                          value: fifaProfile?.DRI,
+                        },
+                      ].map((point, index) => (
+                        <circle
+                          key={index}
+                          cx={point.x}
+                          cy={point.y}
+                          r="6"
+                          fill="hsl(var(--primary))"
+                          stroke="white"
+                          strokeWidth="3"
+                          filter="url(#glow)"
+                          className="animate-pulse"
+                        />
+                      ))}
+
+                      {/* Labels */}
+                      <text
+                        x="320"
+                        y="205"
+                        textAnchor="start"
+                        className="fill-foreground text-sm font-semibold"
+                      >
+                        Shooting ({fifaProfile?.SHO})
+                      </text>
+                      <text
+                        x="270"
+                        y="100"
+                        textAnchor="start"
+                        className="fill-foreground text-sm font-semibold"
+                      >
+                        Pace ({fifaProfile?.PAC})
+                      </text>
+                      <text
+                        x="130"
+                        y="100"
+                        textAnchor="end"
+                        className="fill-foreground text-sm font-semibold"
+                      >
+                        Passing ({fifaProfile?.PAS})
+                      </text>
+                      <text
+                        x="80"
+                        y="205"
+                        textAnchor="end"
+                        className="fill-foreground text-sm font-semibold"
+                      >
+                        Defending ({fifaProfile?.DEF})
+                      </text>
+                      <text
+                        x="130"
+                        y="310"
+                        textAnchor="end"
+                        className="fill-foreground text-sm font-semibold"
+                      >
+                        Physical ({fifaProfile?.PHY})
+                      </text>
+                      <text
+                        x="270"
+                        y="310"
+                        textAnchor="start"
+                        className="fill-foreground text-sm font-semibold"
+                      >
+                        Dribbling ({fifaProfile?.DRI})
+                      </text>
+                    </svg>
+                  </div>
+                ) : (
+                  <p>No data...</p>
+                )}
               </CardContent>
             </Card>
 
-             <StatGroup
+            <StatGroup
               title="Defending"
               showProgress={true}
               stats={[
@@ -1563,81 +1515,142 @@ export default function PlayerDetail() {
             />
 
             <StatGroup
-              title="Goalkeeping"
+              title="Other"
               showProgress={true}
               stats={[
                 {
-                  label: "Clean Sheets",
-                  value: player?.CS,
-                  maxValue: 16,
+                  label: "Points Per Match",
+                  value: player?.PPM,
+                  maxValue: 3,
                 },
                 {
-                  label: "Clean Sheet Percentage",
-                  value: player?.["CS%"],
-                  isPercentage: true,
+                  label: "Passes Received",
+                  value: player?.Rec,
+                  maxValue: 3047,
                 },
                 {
-                  label: "Saves",
-                  value: player?.Saves,
-                  maxValue: 150,
+                  label: "Recoveries",
+                  value: player?.Recov,
+                  maxValue: 254,
                 },
                 {
-                  label: "Save Percentage",
-                  value: player?.["Save%"],
-                  isPercentage: true,
+                  label: "Touches",
+                  value: player?.Touches,
+                  maxValue: 3867,
                 },
                 {
-                  label: "Goals Against",
-                  value: player?.GA,
-                  maxValue: 77,
+                  label: "Total Distance",
+                  value: player?.TotDist,
+                  maxValue: 58907,
                 },
                 {
-                  label: "Goals Against per 90",
-                  value: player?.GA90,
-                  maxValue: 4.58,
+                  label: "Free Kicks",
+                  value: player?.FK,
+                  maxValue: 20,
                 },
                 {
-                  label: "Shots on Target Against",
-                  value: player?.SoTA,
-                  maxValue: 209,
+                  label: "Corner Kicks",
+                  value: player?.CK,
+                  maxValue: 140,
                 },
                 {
-                  label: "Post-Shot Expected Goals",
-                  value: player?.PSxG,
-                  maxValue: 73.5,
+                  label: "Throw-Ins",
+                  value: player?.TI,
+                  maxValue: 399,
                 },
                 {
-                  label: "PSxG Plus/Minus",
-                  value: player?.["PSxG+/-"],
-                  maxValue: 14.6,
+                  label: "Live Ball",
+                  value: player?.Live,
+                  maxValue: 3354,
                 },
                 {
-                  label: "Penalties Against",
-                  value: player?.PKA,
-                  maxValue: 13,
-                },
-                {
-                  label: "Penalty Saves",
-                  value: player?.PKsv,
-                  maxValue: 4,
-                },
-                {
-                  label: "Average Shot Distance",
-                  value: player?.AvgDist,
-                  maxValue: 28,
-                },
-                {
-                  label: "Average Punt Length",
-                  value: player?.AvgLen,
-                  maxValue: 56.3,
-                },
-                {
-                  label: "Long Ball Percentage",
-                  value: player?.["Launch%"],
-                  isPercentage: true,
+                  label: "Dead Ball",
+                  value: player?.Dead,
+                  maxValue: 462,
                 },
               ]}
             />
+
+            {player?.Pos === "GK" ? (
+              <StatGroup
+                title="Goalkeeping"
+                showProgress={true}
+                stats={[
+                  {
+                    label: "Clean Sheets",
+                    value: player?.CS,
+                    maxValue: 16,
+                  },
+                  {
+                    label: "Clean Sheet Percentage",
+                    value: player?.["CS%"],
+                    isPercentage: true,
+                  },
+                  {
+                    label: "Saves",
+                    value: player?.Saves,
+                    maxValue: 150,
+                  },
+                  {
+                    label: "Save Percentage",
+                    value: player?.["Save%"],
+                    isPercentage: true,
+                  },
+                  {
+                    label: "Goals Against",
+                    value: player?.GA,
+                    maxValue: 77,
+                  },
+                  {
+                    label: "Goals Against per 90",
+                    value: player?.GA90,
+                    maxValue: 4.58,
+                  },
+                  {
+                    label: "Shots on Target Against",
+                    value: player?.SoTA,
+                    maxValue: 209,
+                  },
+                  {
+                    label: "Post-Shot Expected Goals",
+                    value: player?.PSxG,
+                    maxValue: 73.5,
+                  },
+                  {
+                    label: "PSxG Plus/Minus",
+                    value: player?.["PSxG+/-"],
+                    maxValue: 14.6,
+                  },
+                  {
+                    label: "Penalties Against",
+                    value: player?.PKA,
+                    maxValue: 13,
+                  },
+                  {
+                    label: "Penalty Saves",
+                    value: player?.PKsv,
+                    maxValue: 4,
+                  },
+                  {
+                    label: "Average Shot Distance",
+                    value: player?.AvgDist,
+                    maxValue: 28,
+                  },
+                  {
+                    label: "Average Punt Length",
+                    value: player?.AvgLen,
+                    maxValue: 56.3,
+                  },
+                  {
+                    label: "Long Ball Percentage",
+                    value: player?.["Launch%"],
+                    isPercentage: true,
+                  },
+                ]}
+              />
+            ) : (
+              ""
+            )}
           </div>
         </div>
       </div>

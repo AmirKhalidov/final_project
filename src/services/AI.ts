@@ -8,17 +8,17 @@ Below are this player’s statistics:\n${JSON.stringify(
     2
   )}, Please write a scouting report in natural language that includes:
 
-Overall impression of the player.
+Write the report in 3–4 natural paragraphs (general overview, strengths, weaknesses, summary).
 
-Strengths (based on highest stats).
+Important formatting:
 
-Weaknesses (based on lowest stats).
+Put two line breaks (\n\n) between each paragraph.
 
-Playing style and possible best role in a team.
+Do not use bullet points or numbering.
 
-Summary sentence about the type of player he is.
+Do not add extra formatting like markdown.
 
-Keep it concise (150–200 words), written like a professional football scout or commentator. Do not list stats again—interpret them into football language. Divide the response into several paragraphs that start from the new line`;
+The output should look like plain text with clear paragraph separations using \n\n.`;
 
   const apiKey = "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"; // Store securely!
 

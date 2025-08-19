@@ -21,6 +21,7 @@ import { useFiltersStore } from "@/stores/useFiltersStore";
 import { useFilterSync } from "@/hooks/useFilterSync";
 import type { Player } from "@/types/Player";
 import { PlayerCard } from "@/components/PlayerCard";
+import Footer from "@/components/Footer";
 
 export default function Home() {
   const [players, setPlayers] = useState<Player[] | null>([]);
@@ -1126,14 +1127,6 @@ export default function Home() {
           </div>
         </main>
 
-        {/* {players?.length
-          ? players.map((player: Player) => (
-              <Link to={`/player/${player.Rk}`} key={player.Rk}>
-                {player.Player}
-              </Link>
-            ))
-          : ""} */}
-
         <Pagination className="my-10">
           <PaginationContent>
             <PaginationItem>
@@ -1164,6 +1157,9 @@ export default function Home() {
             </PaginationItem>
           </PaginationContent>
         </Pagination>
+
+        <Footer />
+
       </SidebarInset>
     </SidebarProvider>
   );
