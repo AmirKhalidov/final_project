@@ -22,6 +22,8 @@ import { useFilterSync } from "@/hooks/useFilterSync";
 import type { Player } from "@/types/Player";
 import { PlayerCard } from "@/components/PlayerCard";
 import Footer from "@/components/Footer";
+import { Header } from "@/components/header";
+import Hero from "@/components/Hero";
 
 export default function Home() {
   const [players, setPlayers] = useState<Player[] | null>([]);
@@ -1111,11 +1113,14 @@ export default function Home() {
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
-        <header className="bg-background sticky top-0 flex h-16 shrink-0 items-center gap-2 border-b px-4">
+        <header className="bg-background sticky top-0 z-50 flex h-16 shrink-0 items-center gap-2 border-b px-4">
           <SidebarTrigger className="-ml-1 cursor-pointer" />
+          <Header />
         </header>
 
+
         <main className="min-h-screen bg-background p-6">
+        <Hero />
           <div className="max-w-7xl mx-auto">
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
               {uniquePlayers(players).map((player: Player) => (
@@ -1159,7 +1164,6 @@ export default function Home() {
         </Pagination>
 
         <Footer />
-
       </SidebarInset>
     </SidebarProvider>
   );

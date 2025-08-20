@@ -26,6 +26,7 @@
     "express": "^5.1.0",
     "framer-motion": "^12.23.12",
     "lucide-react": "^0.539.0",
+    "motion": "^12.23.12",
     "node-fetch": "^3.3.2",
     "rc-slider": "^11.1.8",
     "react": "^19.1.0",
