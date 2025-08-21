@@ -2,7 +2,7 @@ import axios from "axios";
 
 export async function getPlayerAnnotationFromAI(player: any) {
   const prompt = `You are a professional football scout writing a player profile.
-Below are this player’s statistics:\n${JSON.stringify(
+Below are this player’s statistics(distances in metres):\n${JSON.stringify(
     player,
     null,
     2

@@ -6,6 +6,11 @@ import { Button } from "@/components/ui/button";
 import React from "react";
 import { cn } from "@/lib/utils";
 
+import { useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { UserAvatar } from "@/components/UserAvatar";
+import { AuthDialog } from "@/components/AuthDialog";
+
 const menuItems = [
   { name: "Features", href: "#link" },
   { name: "Solution", href: "#link" },
@@ -15,25 +20,29 @@ const menuItems = [
 
 export const Header = () => {
   const [menuState, setMenuState] = React.useState(false);
-  const [isScrolled, setIsScrolled] = React.useState(false);
 
-  React.useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  const { user, loading } = useAuth();
+  const [authDialogOpen, setAuthDialogOpen] = useState(false);
+  const [authDialogTab, setAuthDialogTab] = useState<"signin" | "signup">(
+    "signin"
+  );
+
+  const handleSignInClick = () => {
+    setAuthDialogTab("signin");
+    setAuthDialogOpen(true);
+  };
+
+  const handleSignUpClick = () => {
+    setAuthDialogTab("signup");
+    setAuthDialogOpen(true);
+  };
+
   return (
-      <nav
-        data-state={menuState && "active"}
-        className="w-full px-2"
-      >
+    <>
+      <nav data-state={menuState && "active"} className="w-full px-2">
         <div
           className={cn(
-            "mx-auto mt-2 max-w-6xl px-6 transition-all duration-300 lg:px-12",
-            // isScrolled &&
-            //   "bg-background/50 max-w-4xl rounded-2xl border backdrop-blur-lg lg:px-5"
+            "mx-auto mt-2 max-w-6xl px-6 transition-all duration-300 lg:px-12"
           )}
         >
           <div className="relative flex flex-wrap items-center justify-between gap-6 h-16 lg:gap-0">
@@ -86,39 +95,47 @@ export const Header = () => {
                   ))}
                 </ul>
               </div>
+
               <div className="flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
-                <Button
-                  asChild
-                  variant="outline"
-                  size="sm"
-                  // className={cn(isScrolled && "lg:hidden")}
-                >
-                  <Link to="#">
-                    <span>Login</span>
-                  </Link>
-                </Button>
-                <Button
-                  asChild
-                  size="sm"
-                  // className={cn(isScrolled && "lg:hidden")}
-                >
-                  <Link to="#">
-                    <span>Sign Up</span>
-                  </Link>
-                </Button>
-                {/* <Button
-                  asChild
-                  size="sm"
-                  className={cn(isScrolled ? "lg:inline-flex" : "hidden")}
-                >
-                  <Link to="#">
-                    <span>Get Started</span>
-                  </Link>
-                </Button> */}
+                {loading ? (
+                  <div className="h-8 w-8 animate-pulse bg-muted rounded-full" />
+                ) : user ? (
+                  <UserAvatar />
+                ) : (
+                  <>
+                    <Link to="/login">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handleSignInClick}
+                        className="cursor-pointer"
+                      >
+                        <span>Login</span>
+                      </Button>
+                    </Link>
+
+                    <Link to="signup">
+                      <Button
+                        size="sm"
+                        onClick={handleSignUpClick}
+                        className="cursor-pointer"
+                      >
+                        <span>Sign Up</span>
+                      </Button>
+                    </Link>
+                  </>
+                )}
               </div>
             </div>
           </div>
         </div>
       </nav>
+
+      <AuthDialog
+        open={authDialogOpen}
+        onOpenChange={setAuthDialogOpen}
+        defaultTab={authDialogTab}
+      />
+    </>
   );
 };

@@ -22,8 +22,8 @@ import { useFilterSync } from "@/hooks/useFilterSync";
 import type { Player } from "@/types/Player";
 import { PlayerCard } from "@/components/PlayerCard";
 import Footer from "@/components/Footer";
-import { Header } from "@/components/header";
 import Hero from "@/components/Hero";
+import { Header } from "@/components/Header";
 
 export default function Home() {
   const [players, setPlayers] = useState<Player[] | null>([]);
@@ -280,29 +280,6 @@ export default function Home() {
     if (!hydrated) return;
     async function fetchPlayers() {
       let query = supabase.from("PlayersData").select("*", { count: "exact" });
-      // console.log("Starting fetch...");
-
-      // // First, let's check the total count without any filters
-      // const { count: totalCount } = await supabase
-      //   .from("PlayersData")
-      //   .select("*", { count: "exact", head: true });
-
-      // console.log("Total records in database:", totalCount);
-
-      // let allPlayers: any[] = [];
-      // let from = 0;
-      // const batchSize = 1000;
-      // let fetchMore = true;
-      // let batchNumber = 1;
-
-      // while (fetchMore) {
-      //   console.log(
-      //     `Fetching batch ${batchNumber} (records ${from} to ${
-      //       from + batchSize - 1
-      //     })`
-      //   );
-
-      // let query = supabase.from("PlayersData").select("*");
 
       if (searchValue) query = query.ilike("Player", `%${searchValue}%`);
 
@@ -1118,9 +1095,8 @@ export default function Home() {
           <Header />
         </header>
 
-
         <main className="min-h-screen bg-background p-6">
-        <Hero />
+          {page === 1 && <Hero />}
           <div className="max-w-7xl mx-auto">
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
               {uniquePlayers(players).map((player: Player) => (

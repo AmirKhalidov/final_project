@@ -1,30 +1,55 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { Heart } from "lucide-react";
 import { useEffect, useState } from "react";
 import type { Player } from "@/types/Player";
 import { fetchWikipediaImage } from "@/services/profileDetails";
 import { getFifaImageUrl, getPlayerFromFifa } from "@/services/apiPlayers";
+import { useFavorites } from "@/contexts/FavoritesContext";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface PlayerCardProps {
   player: Player;
 }
 
 export function PlayerCard({ player }: PlayerCardProps) {
-  const [isFavorited, setIsFavorited] = useState<boolean>(false);
+  const { addToFavorites, removeFromFavorites, isFavorited } = useFavorites();
+  const { user } = useAuth();
   const [profileImage, setProfileImage] = useState<string>("");
   const [fifaProfile, setFifaProfile] = useState<object>({});
-  const [fifaProfileImage, setFifaProfileImage] = useState<string>('');
+  const [fifaProfileImage, setFifaProfileImage] = useState<string>("");
+  const [showLoginTooltip, setShowLoginTooltip] = useState(false);
 
-  const toggleFavorite = () => {
-    setIsFavorited(!isFavorited);
+  const isPlayerFavorited = isFavorited(player.Rk);
+
+  const toggleFavorite = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!user) {
+      setShowLoginTooltip(true);
+      setTimeout(() => setShowLoginTooltip(false), 3000);
+      return;
+    }
+
+    if (isPlayerFavorited) {
+      removeFromFavorites(player.Rk);
+    } else {
+      addToFavorites(player);
+    }
   };
 
   useEffect(() => {
     fetchWikipediaImage(player?.Player).then(setProfileImage);
     getPlayerFromFifa(player?.Player).then(setFifaProfile);
-    setFifaProfileImage(getFifaImageUrl(fifaProfile))
+    setFifaProfileImage(getFifaImageUrl(fifaProfile));
   }, [player, fifaProfile]);
 
   return (
@@ -32,30 +57,61 @@ export function PlayerCard({ player }: PlayerCardProps) {
       <CardHeader className="p-0">
         <div className="relative h-[235px] overflow-hidden">
           <img
-            src={profileImage || fifaProfileImage || "/src/assets/placeholder.jpg"}
+            src={
+              profileImage || fifaProfileImage || "/src/assets/placeholder.jpg"
+            }
             alt={`${player.Player} - ${player.Squad}`}
-            // fill
             className="object-cover group-hover:scale-110 transition-transform duration-500"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
           <div className="absolute top-3 right-3">
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={toggleFavorite}
-              className={`h-8 w-8 p-0 cursor-pointer rounded-full backdrop-blur-sm transition-all duration-300 ${
-                isFavorited
-                  ? "bg-red-500/90 hover:bg-red-600/90 text-white"
-                  : "bg-white/90 hover:bg-white text-gray-700 hover:text-red-500"
-              }`}
-            >
-              <Heart
-                className={`h-4 w-4 transition-all duration-300 ${
-                  isFavorited ? "fill-current" : ""
+            {!user ? (
+              <TooltipProvider>
+                <Tooltip
+                  open={showLoginTooltip}
+                  onOpenChange={() => {}}
+                  delayDuration={0}
+                >
+                  <TooltipTrigger asChild>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={toggleFavorite}
+                      onMouseEnter={() => {}}
+                      onMouseLeave={() => {}}
+                      className="h-8 w-8 p-0 cursor-pointer rounded-full backdrop-blur-sm transition-all duration-300 bg-white/90 hover:bg-white text-gray-700 hover:text-red-500"
+                    >
+                      <Heart className="h-4 w-4 transition-all duration-300" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent
+                    side="bottom"
+                    className="bg-gray-900 text-white"
+                    onPointerDownOutside={() => setShowLoginTooltip(false)}
+                  >
+                    <p>Please log in to add players to favorites</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            ) : (
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={toggleFavorite}
+                className={`h-8 w-8 p-0 cursor-pointer rounded-full backdrop-blur-sm transition-all duration-300 ${
+                  isPlayerFavorited
+                    ? "bg-red-500/90 hover:bg-red-600/90 text-white"
+                    : "bg-white/90 hover:bg-white text-gray-700 hover:text-red-500"
                 }`}
-              />
-            </Button>
+              >
+                <Heart
+                  className={`h-4 w-4 transition-all duration-300 ${
+                    isPlayerFavorited ? "fill-current" : ""
+                  }`}
+                />
+              </Button>
+            )}
           </div>
         </div>
       </CardHeader>
