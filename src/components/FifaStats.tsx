@@ -1,9 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { FifaPlayerProfile } from "@/types/FifaPlayerProfile";
-
-interface FifaStatsProps {
-  fifaProfile: FifaPlayerProfile | null | undefined;
-}
+import type { FifaStatsProps } from "@/types/PlayerDetailTypes";
 
 export function FifaStats({ fifaProfile }: FifaStatsProps) {
   if (!fifaProfile?.Name) {
@@ -24,7 +20,6 @@ export function FifaStats({ fifaProfile }: FifaStatsProps) {
       </CardHeader>
       <CardContent className="space-y-3">
         <div className="grid grid-cols-2 gap-4">
-          {/* PACE */}
           <div className="space-y-2">
             <h4 className="font-semibold text-sm text-muted-foreground">
               PACE
@@ -45,7 +40,6 @@ export function FifaStats({ fifaProfile }: FifaStatsProps) {
             </div>
           </div>
 
-          {/* SHOOTING */}
           <div className="space-y-2">
             <h4 className="font-semibold text-sm text-muted-foreground">
               SHOOTING
@@ -84,7 +78,6 @@ export function FifaStats({ fifaProfile }: FifaStatsProps) {
             </div>
           </div>
 
-          {/* PASSING */}
           <div className="space-y-2">
             <h4 className="font-semibold text-sm text-muted-foreground">
               PASSING
@@ -123,7 +116,6 @@ export function FifaStats({ fifaProfile }: FifaStatsProps) {
             </div>
           </div>
 
-          {/* DRIBBLING */}
           <div className="space-y-2">
             <h4 className="font-semibold text-sm text-muted-foreground">
               DRIBBLING
@@ -154,7 +146,6 @@ export function FifaStats({ fifaProfile }: FifaStatsProps) {
             </div>
           </div>
 
-          {/* DEFENDING */}
           <div className="space-y-2">
             <h4 className="font-semibold text-sm text-muted-foreground">
               DEFENDING
@@ -193,7 +184,6 @@ export function FifaStats({ fifaProfile }: FifaStatsProps) {
             </div>
           </div>
 
-          {/* PHYSICAL */}
           <div className="space-y-2">
             <h4 className="font-semibold text-sm text-muted-foreground">
               PHYSICAL
@@ -219,7 +209,6 @@ export function FifaStats({ fifaProfile }: FifaStatsProps) {
           </div>
         </div>
 
-        {/* Player Info Section */}
         <div className="border-t pt-4 mt-4">
           <h4 className="font-semibold text-sm text-muted-foreground mb-3">
             PLAYER INFO

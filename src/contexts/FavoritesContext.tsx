@@ -13,7 +13,6 @@ const FavoritesContext = createContext<FavoritesContextType | undefined>(undefin
 export function FavoritesProvider({ children }: { children: React.ReactNode }) {
   const [favorites, setFavorites] = useState<Player[]>([]);
 
-  // Load favorites from localStorage on mount
   useEffect(() => {
     const savedFavorites = localStorage.getItem('favoriteItems');
     if (savedFavorites) {
@@ -21,7 +20,6 @@ export function FavoritesProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  // Save to localStorage whenever favorites change
   useEffect(() => {
     localStorage.setItem('favoriteItems', JSON.stringify(favorites));
   }, [favorites]);

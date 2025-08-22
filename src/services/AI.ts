@@ -1,8 +1,9 @@
+import type { Player } from "@/types/Player";
 import axios from "axios";
 
-export async function getPlayerAnnotationFromAI(player: any) {
+export async function getPlayerAnnotationFromAI(player: Player) {
   const prompt = `You are a professional football scout writing a player profile.
-Below are this player’s statistics(distances in metres):\n${JSON.stringify(
+Below are this player's statistics (distances in metres):\n${JSON.stringify(
     player,
     null,
     2
@@ -20,13 +21,16 @@ Do not add extra formatting like markdown.
 
 The output should look like plain text with clear paragraph separations using \n\n.`;
 
-  const apiKey = "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"; // Store securely!
+  const apiKey = import.meta.env.VITE_GROQ_API_KEY;
+
+  if (!apiKey) {
+    throw new Error("GROQ API key is not configured");
+  }
 
   const response = await axios.post(
     "https://api.groq.com/openai/v1/chat/completions",
     {
-      // model: "llama3-8b-8192", // or "mixtral-8x7b-32768", etc.
-      model: "meta-llama/llama-4-maverick-17b-128e-instruct", // or "mixtral-8x7b-32768", etc.
+      model: "meta-llama/llama-4-maverick-17b-128e-instruct",
       messages: [{ role: "user", content: prompt }],
       max_tokens: 512,
     },

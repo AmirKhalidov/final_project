@@ -1,8 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
-interface AIPortraitProps {
-  annotation: string;
-}
+import type { AIPortraitProps } from "@/types/PlayerDetailTypes";
 
 export function AIPortrait({ annotation }: AIPortraitProps) {
   return (

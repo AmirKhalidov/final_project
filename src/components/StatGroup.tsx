@@ -1,16 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { StatWithProgress } from "./StatWithProgress";
-
-interface StatGroupProps {
-  title: string;
-  stats: Array<{
-    label: string;
-    value: string | number | undefined | null;
-    isPercentage?: boolean;
-    maxValue?: number;
-  }>;
-  showProgress?: boolean;
-}
+import type { StatGroupProps } from "@/types/PlayerDetailTypes";
 
 export function StatGroup({
   title,

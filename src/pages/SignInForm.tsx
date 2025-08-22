@@ -9,7 +9,7 @@ import { Link } from "react-router";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Loader2 } from "lucide-react";
 
-export function SignInForm() {
+export default function SignInForm() {
   const { signIn, signInWithGoogle } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);

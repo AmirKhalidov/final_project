@@ -8,7 +8,7 @@ import { Link } from "react-router";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Loader2 } from "lucide-react";
 
-export function SignUpForm() {
+export default function SignUpForm() {
   const { signUp, signInWithGoogle } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

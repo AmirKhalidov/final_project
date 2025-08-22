@@ -1,11 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/shadcn-io/spinner/index";
-
-interface PlayerImageProps {
-  profileImage: string;
-  playerName?: string;
-  loading: boolean;
-}
+import type { PlayerImageProps } from "@/types/PlayerDetailTypes";
 
 export function PlayerImage({
   profileImage,

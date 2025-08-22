@@ -96,7 +96,6 @@ export default function PlayerDetail() {
 
       <div className="min-h-screen bg-background p-6">
         <div className="max-w-7xl mx-auto">
-          {/* Player Header */}
           <div className="mb-8">
             <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-primary via-primary to-primary/70 bg-clip-text animate-pulse text-[#15803d]">
               {player?.Player}
@@ -113,7 +112,6 @@ export default function PlayerDetail() {
           </div>
 
           <div className="grid lg:grid-cols-2 gap-8">
-            {/* Left Column */}
             <div className="space-y-6 p-6 bg-background rounded-lg border border-primary/10 shadow-xl shadow-primary/5 backdrop-blur-sm">
               <PlayerImage
                 profileImage={profileImage}
@@ -149,7 +147,6 @@ export default function PlayerDetail() {
               />
             </div>
 
-            {/* Right Column */}
             <div className="space-y-6 p-6 bg-background rounded-lg border border-primary/10 shadow-xl shadow-primary/5 backdrop-blur-sm">
               <FifaCard
                 fifaProfile={fifaProfile}

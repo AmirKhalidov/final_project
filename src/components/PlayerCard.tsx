@@ -49,9 +49,8 @@ export function PlayerCard({ player }: PlayerCardProps) {
   useEffect(() => {
     fetchWikipediaImage(player?.Player).then(setProfileImage);
     getPlayerFromFifa(player?.Player).then(setFifaProfile);
-  }, [player]); // Remove fifaProfile from dependencies
+  }, [player]);
 
-  // Separate effect to handle FIFA image URL when fifaProfile changes
   useEffect(() => {
     setFifaProfileImage(getFifaImageUrl(fifaProfile));
   }, [fifaProfile]);

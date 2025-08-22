@@ -60,7 +60,6 @@ export function AuthDialog({ open, onOpenChange, defaultTab = "signin" }: AuthDi
       setError(error.message);
     } else {
       setError(null);
-      // Show success message or switch to sign in tab
       alert("Check your email for verification link!");
     }
     

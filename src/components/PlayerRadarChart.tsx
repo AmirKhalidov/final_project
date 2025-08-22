@@ -1,9 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { FifaPlayerProfile } from "@/types/FifaPlayerProfile";
-
-interface PlayerRadarChartProps {
-  fifaProfile: FifaPlayerProfile | null | undefined;
-}
+import type { PlayerRadarChartProps } from "@/types/PlayerDetailTypes";
 
 export function PlayerRadarChart({ fifaProfile }: PlayerRadarChartProps) {
   if (!fifaProfile?.Name) {
@@ -45,7 +41,6 @@ export function PlayerRadarChart({ fifaProfile }: PlayerRadarChartProps) {
               </pattern>
             </defs>
 
-            {/* Grid circles */}
             {[0.2, 0.4, 0.6, 0.8, 1.0].map((scale, index) => (
               <polygon
                 key={index}
@@ -65,7 +60,6 @@ export function PlayerRadarChart({ fifaProfile }: PlayerRadarChartProps) {
               />
             ))}
 
-            {/* Grid lines */}
             {[
               [200, 200, 300, 200],
               [200, 200, 250, 113.4],
@@ -95,7 +89,6 @@ export function PlayerRadarChart({ fifaProfile }: PlayerRadarChartProps) {
               </filter>
             </defs>
 
-            {/* Player stats polygon */}
             <polygon
               points={[
                 [200 + (fifaProfile?.SHO / 100) * 100, 200],
@@ -127,7 +120,6 @@ export function PlayerRadarChart({ fifaProfile }: PlayerRadarChartProps) {
               className="animate-pulse"
             />
 
-            {/* Data points */}
             {[
               {
                 x: 200 + (fifaProfile?.SHO / 100) * 100,
@@ -179,7 +171,6 @@ export function PlayerRadarChart({ fifaProfile }: PlayerRadarChartProps) {
               />
             ))}
 
-            {/* Labels */}
             <text
               x="320"
               y="205"

@@ -1,12 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/shadcn-io/spinner/index";
-import type { FifaPlayerProfile } from "@/types/FifaPlayerProfile";
-
-interface FifaCardProps {
-  fifaProfile: FifaPlayerProfile | null | undefined;
-  fifaProfileImage: string;
-  loading: boolean;
-}
+import type { FifaCardProps } from "@/types/PlayerDetailTypes";
 
 export function FifaCard({
   fifaProfile,

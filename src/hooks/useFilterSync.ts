@@ -6,13 +6,11 @@ export function useFilterSync() {
   const [searchParams, setSearchParams] = useSearchParams();
   const { setFromSearchParams, setHydrated } = useFiltersStore();
 
-  // Initialize store from URL params on mount
   useEffect(() => {
     setFromSearchParams(searchParams);
     setHydrated(true);
-  }, []); // Only run on mount
+  }, []);
 
-  // Subscribe to store changes and update URL
   useEffect(() => {
     const unsubscribe = useFiltersStore.subscribe(
       (state) => state,
@@ -21,7 +19,6 @@ export function useFilterSync() {
         setSearchParams(params);
       },
       {
-        // Only update URL when filter values change, not when actions change
         equalityFn: (a, b) => {
           const filterKeys: (keyof typeof a)[] = [
             "searchValue",
