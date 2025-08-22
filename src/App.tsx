@@ -10,6 +10,7 @@ const PlayerDetail = lazy(() => import("./pages/PlayerDetail"));
 const SignInForm = lazy(() => import("./pages/SignInForm"));
 const SignUpForm = lazy(() => import("./pages/SignUpForm"));
 const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
+const AuthCallback = lazy(() => import("./pages/AuthCallback"));
 const Profile = lazy(() => import("./pages/Profile"));
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
               <Route path="/login" element={<SignInForm />} />
               <Route path="/signup" element={<SignUpForm />} />
               <Route path="/forgotpassword" element={<ForgotPassword />} />
+              <Route path="/auth/callback" element={<AuthCallback />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/player/:rk" element={<PlayerDetail />} />
             </Routes>
