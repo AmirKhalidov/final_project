@@ -6,10 +6,8 @@ import { Button } from "@/components/ui/button";
 import React from "react";
 import { cn } from "@/lib/utils";
 
-import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { UserAvatar } from "@/components/UserAvatar";
-import { AuthDialog } from "@/components/AuthDialog";
 
 const menuItems = [
   { name: "Features", href: "#link" },
@@ -22,20 +20,6 @@ export const Header = () => {
   const [menuState, setMenuState] = React.useState(false);
 
   const { user, loading } = useAuth();
-  const [authDialogOpen, setAuthDialogOpen] = useState(false);
-  const [authDialogTab, setAuthDialogTab] = useState<"signin" | "signup">(
-    "signin"
-  );
-
-  const handleSignInClick = () => {
-    setAuthDialogTab("signin");
-    setAuthDialogOpen(true);
-  };
-
-  const handleSignUpClick = () => {
-    setAuthDialogTab("signup");
-    setAuthDialogOpen(true);
-  };
 
   return (
     <>
@@ -107,7 +91,6 @@ export const Header = () => {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={handleSignInClick}
                         className="cursor-pointer"
                       >
                         <span>Login</span>
@@ -115,11 +98,7 @@ export const Header = () => {
                     </Link>
 
                     <Link to="signup">
-                      <Button
-                        size="sm"
-                        onClick={handleSignUpClick}
-                        className="cursor-pointer"
-                      >
+                      <Button size="sm" className="cursor-pointer">
                         <span>Sign Up</span>
                       </Button>
                     </Link>
@@ -130,12 +109,6 @@ export const Header = () => {
           </div>
         </div>
       </nav>
-
-      <AuthDialog
-        open={authDialogOpen}
-        onOpenChange={setAuthDialogOpen}
-        defaultTab={authDialogTab}
-      />
     </>
   );
 };
