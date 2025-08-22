@@ -3,9 +3,14 @@ import { Header } from "@/components/Header";
 import { useFavorites } from "@/contexts/FavoritesContext";
 import { PlayerCard } from "@/components/PlayerCard";
 import { Link } from "react-router-dom";
+import { useEffect } from "react";
 
 export default function Profile() {
   const { favorites } = useFavorites();
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
 
   return (
     <>

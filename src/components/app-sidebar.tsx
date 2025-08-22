@@ -3,7 +3,6 @@ import { ChevronRight } from "lucide-react";
 import { DualRangeSlider } from "@/components/ui/dual-range-slider";
 import { Button } from "@/components/ui/button";
 import { SearchForm } from "@/components/search-form";
-import { VersionSwitcher } from "@/components/version-switcher";
 import Logo from "@/assets/logo7.webp";
 import {
   Collapsible,

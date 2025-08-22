@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import LogoIcon from "@/assets/logo2.webp";
 import { Button } from "@/components/ui/button";
@@ -11,7 +10,6 @@ import { Loader2 } from "lucide-react";
 
 export function SignUpForm() {
   const { signUp, signInWithGoogle } = useAuth();
-  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
