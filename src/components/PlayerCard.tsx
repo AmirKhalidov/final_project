@@ -14,6 +14,7 @@ import { fetchWikipediaImage } from "@/services/profileDetails";
 import { getFifaImageUrl, getPlayerFromFifa } from "@/services/apiPlayers";
 import { useFavorites } from "@/contexts/FavoritesContext";
 import { useAuth } from "@/contexts/AuthContext";
+import placeholderImage from "@/assets/placeholder.jpg";
 
 interface PlayerCardProps {
   player: Player;
@@ -61,7 +62,7 @@ export function PlayerCard({ player }: PlayerCardProps) {
         <div className="relative h-[235px] overflow-hidden">
           <img
             src={
-              profileImage || fifaProfileImage || "/src/assets/placeholder.jpg"
+              profileImage || fifaProfileImage || placeholderImage
             }
             alt={`${player.Player} - ${player.Squad}`}
             className="object-cover group-hover:scale-110 transition-transform duration-500"

@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/shadcn-io/spinner/index";
 import type { FifaCardProps } from "@/types/PlayerDetailTypes";
+import placeholder2Image from "@/assets/placeholder2.jpg";
 
 export function FifaCard({
   fifaProfile,
@@ -22,7 +23,7 @@ export function FifaCard({
             </div>
           ) : (
             <img
-              src={fifaProfileImage || "/src/assets/placeholder2.jpg"}
+              src={fifaProfileImage || placeholder2Image}
               alt={fifaProfile?.Name}
               className="object-cover rounded w-48 h-64"
             />
