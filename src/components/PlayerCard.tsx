@@ -49,8 +49,12 @@ export function PlayerCard({ player }: PlayerCardProps) {
   useEffect(() => {
     fetchWikipediaImage(player?.Player).then(setProfileImage);
     getPlayerFromFifa(player?.Player).then(setFifaProfile);
+  }, [player]); // Remove fifaProfile from dependencies
+
+  // Separate effect to handle FIFA image URL when fifaProfile changes
+  useEffect(() => {
     setFifaProfileImage(getFifaImageUrl(fifaProfile));
-  }, [player, fifaProfile]);
+  }, [fifaProfile]);
 
   return (
     <Card className="overflow-hidden hover:shadow-2xl transition-all duration-500 group relative bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800 border-2 hover:border-blue-200 dark:hover:border-blue-800">

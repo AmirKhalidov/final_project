@@ -4,6 +4,7 @@ import { DualRangeSlider } from "@/components/ui/dual-range-slider";
 import { Button } from "@/components/ui/button";
 import { SearchForm } from "@/components/search-form";
 import { VersionSwitcher } from "@/components/version-switcher";
+import Logo from "@/assets/logo7.webp";
 import {
   Collapsible,
   CollapsibleContent,
@@ -22,6 +23,7 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import { useFiltersStore } from "@/stores/useFiltersStore";
+import { Link } from "react-router";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const {
@@ -327,10 +329,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar {...props}>
       <SidebarHeader>
-        <VersionSwitcher
-          versions={["1.0.1", "1.1.0-alpha", "2.0.0-beta1"]}
-          defaultVersion="1.0.1"
-        />
+        <Link to="/">
+          <img src={Logo} alt="Logo" className="" />
+        </Link>
         <SearchForm
           onSearch={setSearchValue}
           value={searchValue}

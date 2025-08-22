@@ -1,5 +1,4 @@
 import { AppSidebar } from "@/components/app-sidebar";
-import { Separator } from "@/components/ui/separator";
 import {
   SidebarInset,
   SidebarProvider,
@@ -16,7 +15,7 @@ import {
 } from "@/components/ui/pagination";
 import supabase from "@/services/supabase";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { useFiltersStore } from "@/stores/useFiltersStore";
 import { useFilterSync } from "@/hooks/useFilterSync";
 import type { Player } from "@/types/Player";
@@ -27,10 +26,23 @@ import { Header } from "@/components/Header";
 
 export default function Home() {
   const [players, setPlayers] = useState<Player[] | null>([]);
-  const [page, setPage] = useState<number>(1);
+  const [searchParams, setSearchParams] = useSearchParams();
+  // const [page, setPage] = useState<number>(1);
   const [total, setTotal] = useState<number>(0);
   const pageSize = 25;
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
+
+  const page = parseInt(searchParams.get('page') || '1', 10);
+
+  const setPage = (newPage: number) => {
+    const newParams = new URLSearchParams(searchParams);
+    if (newPage === 1) {
+      newParams.delete('page');
+    } else {
+      newParams.set('page', newPage.toString());
+    }
+    setSearchParams(newParams);
+  };
 
   function renderPageLinks() {
     const pages = [];
@@ -76,6 +88,10 @@ export default function Home() {
 
   // Use the filter sync hook
   useFilterSync();
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [page]);
 
   // Get all filter values from store
   const {
@@ -1069,24 +1085,6 @@ export default function Home() {
   console.log("player", players);
 
   return (
-    // <SidebarProvider>
-    //   <AppSidebar />
-    //   <SidebarInset>
-    //     <header className="bg-background sticky top-0 flex h-16 shrink-0 items-center gap-2 border-b px-4">
-    //       <SidebarTrigger className="-ml-1 cursor-pointer" />
-    //       {/* <Separator orientation="vertical" className="mr-2 h-4" /> */}
-    //     </header>
-
-    //     {players?.length
-    //       ? players.map((player: Player) => (
-    //           <Link to={`/player/${player.Rk}`} key={player.Rk}>
-    //             {player.Player}
-    //           </Link>
-    //         ))
-    //       : ""}
-    //   </SidebarInset>
-    // </SidebarProvider>
-
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>

@@ -251,6 +251,7 @@ import type { Player } from "@/types/Player";
 import type { FifaPlayerProfile } from "@/types/FifaPlayerProfile";
 import { Header } from "@/components/Header";
 import Footer from "@/components/Footer";
+import { Spinner } from "@/components/ui/shadcn-io/spinner/index";
 
 // interface Player {
 //   id: number;
@@ -457,8 +458,11 @@ export default function PlayerDetail() {
   const [player, setPlayer] = useState<Player | null>(null);
   const [annotation, setAnnotation] = useState<string>("");
   const [profileImage, setProfileImage] = useState<string>("");
-  const [fifaProfile, setFifaProfile] = useState<FifaPlayerProfile | null>({});
+  const [fifaProfile, setFifaProfile] = useState<FifaPlayerProfile | null>();
   const [fifaProfileImage, setFifaProfileImage] = useState<string>("");
+
+  const [profileImageLoading, setProfileImageLoading] = useState<boolean>(true);
+  const [fifaImageLoading, setFifaImageLoading] = useState<boolean>(true);
 
   console.log(player);
 
@@ -468,14 +472,43 @@ export default function PlayerDetail() {
 
   useEffect(() => {
     if (player) {
+      setProfileImageLoading(true);
+      setFifaImageLoading(true);
+
       getPlayerAnnotationFromAI(player).then(setAnnotation);
-      fetchWikipediaImage(player?.Player).then(setProfileImage);
-      getPlayerFromFifa(player?.Player).then(setFifaProfile);
+
+      fetchWikipediaImage(player?.Player)
+        .then((image) => {
+          setProfileImage(image);
+          setProfileImageLoading(false); // ✅ Set to false after fetch completes
+        })
+        .catch(() => {
+          setProfileImageLoading(false); // ✅ Also handle error case
+        });
+
+      getPlayerFromFifa(player?.Player)
+        .then((profile) => {
+          setFifaProfile(profile);
+          // Don't set fifaImageLoading here - let the next useEffect handle it
+        })
+        .catch(() => {
+          setFifaProfile(null);
+          setFifaImageLoading(false); // ✅ Stop loading on error
+        });
     }
   }, [player]);
 
   useEffect(() => {
-    setFifaProfileImage(getFifaImageUrl(fifaProfile));
+    if (fifaProfile && Object.keys(fifaProfile).length > 0) {
+      const imageUrl = getFifaImageUrl(fifaProfile);
+      setFifaProfileImage(imageUrl);
+      setFifaImageLoading(false); // ✅ Only set to false when we have valid data
+    } else if (
+      fifaProfile === null ||
+      (fifaProfile && Object.keys(fifaProfile).length === 0)
+    ) {
+      setFifaImageLoading(false); // ✅ Stop loading if no data or empty object
+    }
   }, [fifaProfile]);
 
   useEffect(() => {
@@ -607,11 +640,17 @@ export default function PlayerDetail() {
                 <CardContent className="p-0">
                   <div className="flex justify-center">
                     <div className="relative aspect-[3/4] max-w-md w-full">
-                      <img
-                        src={profileImage || "/src/assets/placeholder.jpg"}
-                        alt={player?.Player}
-                        className="object-cover rounded-lg transition-transform duration-500 hover:scale-105 w-full h-full"
-                      />
+                      {profileImageLoading ? (
+                        <div className="flex items-center justify-center w-full h-full bg-gray-100 dark:bg-gray-800 rounded-lg">
+                          <Spinner className="w-8 h-8 text-blue-500" />
+                        </div>
+                      ) : (
+                        <img
+                          src={profileImage || "/src/assets/placeholder.jpg"}
+                          alt={player?.Player}
+                          className="object-cover rounded-lg transition-transform duration-500 hover:scale-105 w-full h-full"
+                        />
+                      )}
                       <div className="absolute inset-0 bg-gradient-to-t from-primary/10 via-transparent to-transparent opacity-0 hover:opacity-100 transition-opacity duration-500" />
                     </div>
                   </div>
@@ -865,11 +904,17 @@ export default function PlayerDetail() {
                 </CardHeader>
                 <CardContent>
                   <div className="flex justify-center items-center">
-                    <img
-                      src={fifaProfileImage || "/src/assets/placeholder2.jpg"}
-                      alt={fifaProfile?.Name}
-                      className="object-cover rounded w-48 h-64"
-                    />
+                    {fifaImageLoading ? (
+                      <div className="flex items-center justify-center w-48 h-64 bg-gray-100 dark:bg-gray-800 rounded">
+                        <Spinner className="w-8 h-8 text-blue-500" />
+                      </div>
+                    ) : (
+                      <img
+                        src={fifaProfileImage || "/src/assets/placeholder2.jpg"}
+                        alt={fifaProfile?.Name}
+                        className="object-cover rounded w-48 h-64"
+                      />
+                    )}
                   </div>
                 </CardContent>
               </Card>
