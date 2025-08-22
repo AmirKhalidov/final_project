@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/shadcn-io/spinner/index";
 import type { PlayerImageProps } from "@/types/PlayerDetailTypes";
+import placeholderImage from "@/assets/placeholder.jpg";
 
 export function PlayerImage({
   profileImage,
@@ -18,7 +19,7 @@ export function PlayerImage({
               </div>
             ) : (
               <img
-                src={profileImage || "/src/assets/placeholder.jpg"}
+                src={profileImage || placeholderImage}
                 alt={playerName}
                 className="object-cover rounded-lg transition-transform duration-500 hover:scale-105 w-full h-full"
               />
