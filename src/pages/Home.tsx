@@ -13,7 +13,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useFilterSync } from "@/hooks/useFilterSync";
 import { usePlayersFetch } from "@/hooks/usePlayersFetch";
@@ -22,22 +22,66 @@ import { PlayerCard } from "@/components/PlayerCard";
 import Footer from "@/components/Footer";
 import Hero from "@/components/Hero";
 import { Header } from "@/components/Header";
+import { useFiltersStore } from "@/stores/useFiltersStore";
 
 export default function Home() {
   const [searchParams, setSearchParams] = useSearchParams();
   const pageSize = 25;
   const page = parseInt(searchParams.get("page") || "1", 10);
+  const playersResultsRef = useRef<HTMLDivElement>(null);
+  const hasInteractedWithFilters = useRef(false);
+  const previousFiltersRef = useRef<string>("");
 
   const { players, loading, error, totalPages } = usePlayersFetch(
     page,
     pageSize
   );
 
+  const filters = useFiltersStore();
+
   useFilterSync();
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [page]);
+
+  useEffect(() => {
+    if (!filters.hydrated) return;
+
+    const currentFiltersString = JSON.stringify({
+      ...filters,
+      hydrated: undefined,
+    });
+
+    if (previousFiltersRef.current === "") {
+      previousFiltersRef.current = currentFiltersString;
+      return;
+    }
+
+    if (previousFiltersRef.current !== currentFiltersString) {
+      hasInteractedWithFilters.current = true;
+      previousFiltersRef.current = currentFiltersString;
+    }
+  }, [filters]);
+
+  useEffect(() => {
+    if (!loading && players && page === 1 && hasInteractedWithFilters.current) {
+      setTimeout(() => {
+        if (playersResultsRef.current) {
+          const elementTop =
+            playersResultsRef.current.getBoundingClientRect().top;
+          const offsetPosition = elementTop + window.pageYOffset - 100;
+
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: "smooth",
+          });
+        }
+      }, 100);
+
+      hasInteractedWithFilters.current = false;
+    }
+  }, [players, loading, page]);
 
   const setPage = (newPage: number) => {
     const newParams = new URLSearchParams(searchParams);
@@ -113,61 +157,64 @@ export default function Home() {
         <main className="min-h-screen bg-background p-6">
           {page === 1 && <Hero />}
           <div className="max-w-7xl mx-auto">
-            {loading ? (
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-                {Array.from({ length: pageSize }).map((_, i) => (
-                  <div
-                    key={i}
-                    className="h-64 bg-gray-200 rounded-lg animate-pulse"
-                  />
-                ))}
-              </div>
-            ) : uniquePlayersData.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-20 px-4">
-                <div className="text-center max-w-md mx-auto">
-                  <div className="mb-6">
-                    <svg
-                      className="mx-auto h-20 w-20 text-gray-400"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={1.5}
-                        d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                      />
-                    </svg>
-                  </div>
-                  <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">
-                    No Players Found
-                  </h3>
-                  <p className="text-gray-600 dark:text-gray-400 mb-6">
-                    We couldn't find any players matching your current filters.
-                    Try adjusting your search criteria or clearing some filters.
-                  </p>
-                  <div className="space-y-2">
-                    <p className="text-sm text-gray-500 dark:text-gray-500">
-                      💡 <span className="font-medium">Tip:</span> Try
-                      broadening your age range or position filters
+            <div ref={playersResultsRef}>
+              {loading ? (
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                  {Array.from({ length: pageSize }).map((_, i) => (
+                    <div
+                      key={i}
+                      className="h-64 bg-gray-200 rounded-lg animate-pulse"
+                    />
+                  ))}
+                </div>
+              ) : uniquePlayersData.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-20 px-4">
+                  <div className="text-center max-w-md mx-auto">
+                    <div className="mb-6">
+                      <svg
+                        className="mx-auto h-20 w-20 text-gray-400"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={1.5}
+                          d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                      </svg>
+                    </div>
+                    <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">
+                      No Players Found
+                    </h3>
+                    <p className="text-gray-600 dark:text-gray-400 mb-6">
+                      We couldn't find any players matching your current
+                      filters. Try adjusting your search criteria or clearing
+                      some filters.
                     </p>
-                    <p className="text-sm text-gray-500 dark:text-gray-500">
-                      🔍 <span className="font-medium">Or:</span> Clear all
-                      filters to see all available players
-                    </p>
+                    <div className="space-y-2">
+                      <p className="text-sm text-gray-500 dark:text-gray-500">
+                        💡 <span className="font-medium">Tip:</span> Try
+                        broadening your age range or position filters
+                      </p>
+                      <p className="text-sm text-gray-500 dark:text-gray-500">
+                        🔍 <span className="font-medium">Or:</span> Clear all
+                        filters to see all available players
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ) : (
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-                {uniquePlayersData.map((player: Player) => (
-                  <Link to={`/player/${player.Rk}`} key={player.Rk}>
-                    <PlayerCard player={player} />
-                  </Link>
-                ))}
-              </div>
-            )}
+              ) : (
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                  {uniquePlayersData.map((player: Player) => (
+                    <Link to={`/player/${player.Rk}`} key={player.Rk}>
+                      <PlayerCard player={player} />
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </main>
 
