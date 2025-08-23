@@ -39,13 +39,6 @@ export default function Home() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [page]);
 
-  useEffect(() => {
-    console.log("Environment check:");
-    console.log("NODE_ENV:", process.env.NODE_ENV);
-    console.log("VITE_GOOGLE_CLIENT_ID:", import.meta.env.VITE_GOOGLE_CLIENT_ID);
-    console.log("Current origin:", window.location.origin);
-  }, []);
-
   const setPage = (newPage: number) => {
     const newParams = new URLSearchParams(searchParams);
     if (newPage === 1) {

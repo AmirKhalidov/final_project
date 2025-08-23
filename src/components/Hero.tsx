@@ -71,7 +71,7 @@ export default function Hero() {
               <div className="text-center sm:mx-auto lg:mr-auto lg:mt-0">
                 <AnimatedGroup variants={{ item: transitionVariants }}>
                   <Link
-                    to="/player/1692"
+                    to="/player/892"
                     className="hover:bg-background dark:hover:border-t-border bg-muted group mx-auto flex w-fit items-center gap-4 rounded-full border p-1 pl-4 shadow-md shadow-zinc-950/5 transition-colors duration-300 dark:border-t-white/5 dark:shadow-zinc-950"
                   >
                     <span className="text-foreground text-sm">
@@ -136,7 +136,7 @@ export default function Hero() {
                       size="lg"
                       className="rounded-xl px-5 text-base"
                     >
-                      <Link to="/player/1692">
+                      <Link to="/player/892">
                         <span className="text-nowrap">Start Scouting</span>
                       </Link>
                     </Button>
@@ -148,7 +148,7 @@ export default function Hero() {
                     variant="ghost"
                     className="h-10.5 rounded-xl px-5"
                   >
-                    <Link to="/player/892">
+                    <Link to="/player/1484">
                       <span className="text-nowrap">Request a demo</span>
                     </Link>
                   </Button>
