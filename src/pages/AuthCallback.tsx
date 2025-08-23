@@ -8,7 +8,6 @@ export default function AuthCallback() {
   const { user, loading } = useAuth();
 
   useEffect(() => {
-
     console.log("=== AUTH CALLBACK DEBUG ===");
     console.log("Domain:", window.location.hostname);
     console.log("Full URL:", window.location.href);
@@ -20,7 +19,7 @@ export default function AuthCallback() {
 
     if (!loading) {
       if (user) {
-        navigate("/", { replace: true });
+        navigate("/player/1", { replace: true });
       } else {
         navigate("/login", { replace: true });
       }
