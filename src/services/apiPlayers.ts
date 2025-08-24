@@ -1,3 +1,4 @@
+import type { FifaPlayerProfile } from "@/types/FifaPlayerProfile";
 import supabase from "./supabase";
 
 export async function getPlayers() {
@@ -41,7 +42,8 @@ export async function getPlayerFromFifa(Name: string) {
   return data;
 }
 
-export function getFifaImageUrl(fifaProfile: any) {
+
+export function getFifaImageUrl(fifaProfile: FifaPlayerProfile) {
   if (!fifaProfile || !fifaProfile.url) return "";
   const segments = fifaProfile.url.split("/");
   const imageId = segments[segments.length - 1];

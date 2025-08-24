@@ -55,4 +55,5 @@ export interface FifaPlayerProfile {
   "Weak foot": number;
   Weight: string;
   "play style": string;
+  url: string;
 }
